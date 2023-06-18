@@ -216,54 +216,63 @@ class AssignDialog(AssignParts):
                 get_properties_value("MPN"),
             ]
             rows += [row]
-            self._parts[ipn] = row
-            self._components[ipn] = component
+            self._parts[ref] = row
+            self._components[ref] = component
 
         rows = natsorted(rows)
 
         for idx, row in enumerate(rows):
             self.parts.AppendItem(row)
-            self._parts_idx.setdefault(row[0], []).append(idx)
+            self._parts_idx.setdefault(row[1], []).append(idx)
 
     def onAutoAssignButton(self, event):
-        for ipn in self._parts:
-            part = Part.list(self.api, IPN=ipn)
-            if not part:
-                continue
-            sparts = part[0].getSupplierParts()
-            if len(sparts) == 1:
+        inventree_parts = {}
+
+        for ref in self._parts:
+            ipn = self._parts[ref][0]
+            if not (part := inventree_parts.get(ipn)):
+                part = Part.list(self.api, IPN=ipn)
+                if not part:
+                    continue
+                sparts = part[0].getSupplierParts()
+                if len(sparts) != 1:
+                    continue
+
                 spart = sparts[0]
                 mpart = ManufacturerPart(self.api, spart.manufacturer_part)
                 manufacturer = Company(self.api, mpart.manufacturer)
 
                 supplier = spart.supplier_detail
 
-                self._parts[ipn] = self._parts[ipn][:2] + [
-                    supplier["name"],
-                    spart.SKU,
-                    manufacturer.name,
-                    mpart.MPN,
-                ]
+            if not part:
+                continue
 
-                for idx in self._parts_idx[ipn]:
-                    for col, value in enumerate(self._parts[ipn][2:], start=2):
-                        self.parts.SetValue(value, idx, col)
+            self._parts[ref] = self._parts[ref][:2] + [
+                supplier["name"],
+                spart.SKU,
+                manufacturer.name,
+                mpart.MPN,
+            ]
 
-                component = self._components[ipn]
+            for idx in self._parts_idx[ref]:
+                for col, value in enumerate(self._parts[ref][2:], start=2):
+                    self.parts.SetValue(value, idx, col)
 
-                def set_property(name, value):
-                    if not value:
-                        return
-                    if name not in component.properties:
-                        property = copy.deepcopy(component.properties["IPN"])
-                        property.name = name
-                        component.properties[name] = property
-                    component.properties[name].value = value
+            component = self._components[ref]
 
-                set_property("Supplier", self._parts[ipn][2])
-                set_property("Supplier Part", self._parts[ipn][3])
-                set_property("Manufacturer", self._parts[ipn][4])
-                set_property("MPN", self._parts[ipn][5])
+            def set_property(name, value):
+                if not value:
+                    return
+                if name not in component.properties:
+                    property = copy.deepcopy(component.properties["IPN"])
+                    property.name = name
+                    component.properties[name] = property
+                component.properties[name].value = value
+
+            set_property("Supplier", self._parts[ref][2])
+            set_property("Supplier Part", self._parts[ref][3])
+            set_property("Manufacturer", self._parts[ref][4])
+            set_property("MPN", self._parts[ref][5])
 
     def onCloseButton(self, event):
         self.Close()
