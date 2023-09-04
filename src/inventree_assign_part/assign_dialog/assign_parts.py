@@ -10,6 +10,7 @@
 import wx
 import wx.xrc
 import wx.dataview
+import wx.propgrid as pg
 
 ###########################################################################
 ## Class AssignParts
@@ -31,17 +32,17 @@ class AssignParts ( wx.Dialog ):
         sbSizer1 = wx.StaticBoxSizer( wx.StaticBox( self.m_panel2, wx.ID_ANY, u"Parts" ), wx.VERTICAL )
 
         self.parts = wx.dataview.DataViewListCtrl( sbSizer1.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, 0 )
-        sbSizer1.Add( self.parts, 2, wx.ALL|wx.EXPAND, 5 )
+        sbSizer1.Add( self.parts, 1, wx.ALL|wx.EXPAND, 5 )
 
 
         self.m_panel2.SetSizer( sbSizer1 )
         self.m_panel2.Layout()
         sbSizer1.Fit( self.m_panel2 )
         self.m_panel3 = wx.Panel( self.m_splitter1, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-        sbSizer3 = wx.StaticBoxSizer( wx.StaticBox( self.m_panel3, wx.ID_ANY, u"label" ), wx.VERTICAL )
+        sbSizer3 = wx.StaticBoxSizer( wx.StaticBox( self.m_panel3, wx.ID_ANY, u"Manufacturer Parts" ), wx.VERTICAL )
 
-        self.m_dataViewListCtrl3 = wx.dataview.DataViewListCtrl( sbSizer3.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, 0 )
-        sbSizer3.Add( self.m_dataViewListCtrl3, 2, wx.ALL|wx.EXPAND, 5 )
+        self.supplier_parts_table = wx.dataview.DataViewListCtrl( sbSizer3.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, 0 )
+        sbSizer3.Add( self.supplier_parts_table, 2, wx.ALL|wx.EXPAND, 5 )
 
 
         self.m_panel3.SetSizer( sbSizer3 )
@@ -51,10 +52,10 @@ class AssignParts ( wx.Dialog ):
         bSizer4.Add( self.m_splitter1, 2, wx.EXPAND, 5 )
 
         self.m_panel31 = wx.Panel( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-        sbSizer31 = wx.StaticBoxSizer( wx.StaticBox( self.m_panel31, wx.ID_ANY, u"label" ), wx.VERTICAL )
+        sbSizer31 = wx.StaticBoxSizer( wx.StaticBox( self.m_panel31, wx.ID_ANY, u"Manufacturer Part Details" ), wx.VERTICAL )
 
-        self.m_dataViewListCtrl4 = wx.dataview.DataViewListCtrl( sbSizer31.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, 0 )
-        sbSizer31.Add( self.m_dataViewListCtrl4, 2, wx.ALL|wx.EXPAND, 5 )
+        self.part_properties = pg.PropertyGrid(sbSizer31.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.propgrid.PG_DEFAULT_STYLE)
+        sbSizer31.Add( self.part_properties, 1, wx.ALL|wx.EXPAND, 5 )
 
 
         self.m_panel31.SetSizer( sbSizer31 )
@@ -64,8 +65,15 @@ class AssignParts ( wx.Dialog ):
 
         bSizer5 = wx.BoxSizer( wx.HORIZONTAL )
 
-        self.m_button9 = wx.Button( self, wx.ID_ANY, u"Assign", wx.DefaultPosition, wx.DefaultSize, 0 )
-        bSizer5.Add( self.m_button9, 0, wx.ALL, 5 )
+        self.assign_button = wx.Button( self, wx.ID_ANY, u"Assign", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.assign_button.Enable( False )
+
+        bSizer5.Add( self.assign_button, 0, wx.ALL, 5 )
+
+        self.assign_all_button = wx.Button( self, wx.ID_ANY, u"Assign All", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.assign_all_button.Enable( False )
+
+        bSizer5.Add( self.assign_all_button, 0, wx.ALL, 5 )
 
         self.m_button12 = wx.Button( self, wx.ID_ANY, u"Auto Assign", wx.DefaultPosition, wx.DefaultSize, 0 )
         bSizer5.Add( self.m_button12, 0, wx.ALL, 5 )
@@ -89,6 +97,10 @@ class AssignParts ( wx.Dialog ):
         self.Centre( wx.BOTH )
 
         # Connect Events
+        self.parts.Bind( wx.dataview.EVT_DATAVIEW_SELECTION_CHANGED, self.parts_onDataViewListCtrolSelectionChanged, id = wx.ID_ANY )
+        self.supplier_parts_table.Bind( wx.dataview.EVT_DATAVIEW_SELECTION_CHANGED, self.supplier_parts_table_onDataViewListCtrlSelectionChanged, id = wx.ID_ANY )
+        self.assign_button.Bind( wx.EVT_BUTTON, self.assign_button_on_click )
+        self.assign_all_button.Bind( wx.EVT_BUTTON, self.assign_all_button_on_click )
         self.m_button12.Bind( wx.EVT_BUTTON, self.onAutoAssignButton )
         self.m_button10.Bind( wx.EVT_BUTTON, self.onSaveButton )
         self.m_button11.Bind( wx.EVT_BUTTON, self.onCloseButton )
@@ -98,6 +110,18 @@ class AssignParts ( wx.Dialog ):
 
 
     # Virtual event handlers, override them in your derived class
+    def parts_onDataViewListCtrolSelectionChanged( self, event ):
+        event.Skip()
+
+    def supplier_parts_table_onDataViewListCtrlSelectionChanged( self, event ):
+        event.Skip()
+
+    def assign_button_on_click( self, event ):
+        event.Skip()
+
+    def assign_all_button_on_click( self, event ):
+        event.Skip()
+
     def onAutoAssignButton( self, event ):
         event.Skip()
 
