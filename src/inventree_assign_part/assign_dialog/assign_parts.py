@@ -81,8 +81,8 @@ class AssignParts ( wx.Dialog ):
 
         bSizer5.Add( ( 0, 0), 1, wx.EXPAND, 5 )
 
-        self.m_button10 = wx.Button( self, wx.ID_ANY, u"Save", wx.DefaultPosition, wx.DefaultSize, 0 )
-        bSizer5.Add( self.m_button10, 0, wx.ALL, 5 )
+        self.save_button = wx.Button( self, wx.ID_ANY, u"Save", wx.DefaultPosition, wx.DefaultSize, 0 )
+        bSizer5.Add( self.save_button, 0, wx.ALL, 5 )
 
         self.m_button11 = wx.Button( self, wx.ID_ANY, u"Close", wx.DefaultPosition, wx.DefaultSize, 0 )
         bSizer5.Add( self.m_button11, 0, wx.ALL, 5 )
@@ -102,7 +102,7 @@ class AssignParts ( wx.Dialog ):
         self.assign_button.Bind( wx.EVT_BUTTON, self.assign_button_on_click )
         self.assign_all_button.Bind( wx.EVT_BUTTON, self.assign_all_button_on_click )
         self.m_button12.Bind( wx.EVT_BUTTON, self.onAutoAssignButton )
-        self.m_button10.Bind( wx.EVT_BUTTON, self.onSaveButton )
+        self.save_button.Bind( wx.EVT_BUTTON, self.onSaveButton )
         self.m_button11.Bind( wx.EVT_BUTTON, self.onCloseButton )
 
     def __del__( self ):

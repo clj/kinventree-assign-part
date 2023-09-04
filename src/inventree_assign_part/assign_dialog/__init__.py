@@ -173,6 +173,8 @@ class AssignDialog(AssignParts):
             self.api = None
             return
 
+        self.save_button.Enable(False)
+
         self.parts.ClearColumns()
         col = self.parts.AppendTextColumn("IPN")
         col.SetWidth(wx.COL_WIDTH_AUTOSIZE)
@@ -256,6 +258,8 @@ class AssignDialog(AssignParts):
         set_property("Manufacturer", self._parts[ref][4])
         set_property("MPN", self._parts[ref][5])
 
+        self.save_button.Enable(True)
+
     def onAutoAssignButton(self, event):
         inventree_parts = {}  # xxx: Fix caching
 
@@ -281,6 +285,19 @@ class AssignDialog(AssignParts):
             self.assign_part(ref, supplier, spart, manufacturer, mpart)
 
     def onCloseButton(self, event):
+        if self.save_button.Enabled:
+            dialog = wx.MessageDialog(
+                self,
+                "You have unsaved changes, do you wish to quit?",
+                "Warning!",
+                wx.YES_NO | wx.ICON_WARNING,
+            )
+            dialog.SetYesNoLabels("Quit", "Cancel")
+            answer = dialog.ShowModal()
+            dialog.Destroy()
+            if answer == wx.ID_NO:
+                return
+
         self.Close()
 
     def onSaveButton(self, event):
