@@ -1,5 +1,8 @@
 from collections import UserDict
 import copy
+import datetime
+from pathlib import Path
+import shutil
 from urllib.parse import urljoin
 
 from inventree.api import InvenTreeAPI
@@ -174,6 +177,7 @@ class AssignDialog(AssignParts):
             return
 
         self.save_button.Enable(False)
+        self.first_save = True
 
         self.parts.ClearColumns()
         col = self.parts.AppendTextColumn("IPN")
@@ -301,7 +305,15 @@ class AssignDialog(AssignParts):
         self.Close()
 
     def onSaveButton(self, event):
+        if self.first_save:
+            self.first_save = False
+            dest = Path(self.filename)
+            dest = dest.with_name(
+                f"{dest.name}.inventree-assign-part.{datetime.datetime.now():%Y%m%dT%H%M%S}.bak"
+            )
+            shutil.copyfile(self.filename, dest)
         self.schematic.save(self.filename)
+        self.save_button.Enable(False)
 
     def update_manufacturer_parts(self, ipn):
         self.assign_button.Enable(False)
