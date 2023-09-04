@@ -337,20 +337,32 @@ class AssignDialog(AssignParts):
         if len(self._parts_ipn[ipn]) > 1:
             self.assign_all_button.Enable(True)
 
-        def prop(label, name, value, /, can_edit=False, prop_type=wx.propgrid.StringProperty):
-            p = prop_type(label, name, value or '')
+        def prop(
+            label, name, value, /, can_edit=False, prop_type=wx.propgrid.StringProperty
+        ):
+            p = prop_type(label, name, value or "")
             if not can_edit:
                 p.ChangeFlag(wx.propgrid.PG_PROP_READONLY, True)
             return p
 
         self.part_properties.Clear()
-        self.part_properties.Append(prop("Description", 'description', f"{row[2].description}"))
-        self.part_properties.Append(prop("Active", 'active', f"{row[2].part_detail['active']}"))
-        self.part_properties.Append(prop("Stock", 'stock', f"{int(row[1].in_stock)}"))
-        self.part_properties.Append(prop("InvenTree", 'inventree', urljoin(self.api.base_url, f'/manufacturer-part/{row[1].pk}/')))
+        self.part_properties.Append(
+            prop("Description", "description", f"{row[2].description}")
+        )
+        self.part_properties.Append(
+            prop("Active", "active", f"{row[2].part_detail['active']}")
+        )
+        self.part_properties.Append(prop("Stock", "stock", f"{int(row[1].in_stock)}"))
+        self.part_properties.Append(
+            prop(
+                "InvenTree",
+                "inventree",
+                urljoin(self.api.base_url, f"/manufacturer-part/{row[1].pk}/"),
+            )
+        )
         if row[2].link:
-            self.part_properties.Append(prop("Datasheet", 'datasheet', row[2].link))
-        self.part_properties.Append(prop("Updated", 'updated', row[1].updated))
+            self.part_properties.Append(prop("Datasheet", "datasheet", row[2].link))
+        self.part_properties.Append(prop("Updated", "updated", row[1].updated))
         self.part_properties.Grid.FitColumns()
 
     def assign_all_button_on_click(self, event):
