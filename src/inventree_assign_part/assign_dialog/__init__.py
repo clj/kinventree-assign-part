@@ -356,6 +356,11 @@ class AssignDialog(AssignParts):
         row_idx = event.EventObject.SelectedRow
         row = self._parts_rows[row_idx]
         self.update_manufacturer_parts(row[0])
+        if row[3]:
+            for idx, spart in enumerate(self.supplier_parts):
+                if spart[1].SKU == row[3]:
+                    self.supplier_parts_table.SelectRow(idx)
+                    break
 
     def supplier_parts_table_onDataViewListCtrlSelectionChanged(self, event):
         row_idx = event.EventObject.SelectedRow
