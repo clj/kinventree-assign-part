@@ -2,10 +2,9 @@ import os
 from pathlib import Path
 import sys
 
-import wx
 from assign_dialog import AssignDialog
-
 from assign_dialog.config import Config
+import wx
 
 
 def main(filename):

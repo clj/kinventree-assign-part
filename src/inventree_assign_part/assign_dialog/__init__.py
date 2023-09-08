@@ -15,7 +15,6 @@ import wx
 
 from .assign_parts import AssignParts
 
-
 # Monkeypatch spexdata.Symbol to work with matching
 sexpdata.Symbol.__match_args__ = ("__match_self_prop__",)
 

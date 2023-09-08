@@ -25,3 +25,4 @@ select = ["E", "F", "I"]
 force-single-line = true
 relative-imports-order = "closest-to-furthest"
 known-first-party = ["inventree_bom"]
+force-sort-within-sections = true
